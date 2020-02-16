@@ -34,7 +34,7 @@ namespace MyAPI.Controllers
 
         #region TIPOS DE ASSINATURA DO METODO
         //public IEnumerable<WeatherForecast> Get(int id)                               // Preparado para retornar apenas um IEnumerable de WeatherForecast
-        //public ActionResult Get(int id)                                               // Preparado para retornar apenas um codigo de resultado (Ok(), BadRequest()...)
+        //public ActionResult Get(int id)                                               // Preparado para retornar um codigo de resultado + um tipo (Ok(product), BadRequest()...)
         //public ActionResult<IEnumerable<WeatherForecast>> Get(int id)                 // Preparado para retornar tanto um IEnumerable de WeatherForecast quanto um codigo de resultado (Ok(), BadRequest()...)
         #endregion
 
@@ -57,6 +57,7 @@ namespace MyAPI.Controllers
         //(...) return BadRequest();
         #endregion
 
+
         [HttpGet("{id:int}")]
         public ActionResult<IEnumerable<WeatherForecast>> Get(int id)
         {
@@ -64,7 +65,9 @@ namespace MyAPI.Controllers
 
             if (Summaries.Length < 15)
             {
-                return BadRequest(); //Possível pois é um ActionResult
+                //return BadRequest(); //Possível pois é um ActionResult
+                //return BadRequest();
+                return CustomResponse();
             }
 
             //OK(...) Retorna um 200
@@ -82,25 +85,26 @@ namespace MyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult Post(Product product)
         {
-            if (product.Id == 0)
+            if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
+
             //Faz coisas
             return CreatedAtAction(nameof(Post), product);
         }
     }
 
-
     //Reescrevemos nossa classe base para que os controller que serão criados posteriormente já sigam um padrão de comportamento estabelecido para toda a aplicação
     [ApiController]
     public abstract class MainController : ControllerBase
     {
+        //Resposta padrão para padronizar o dado recebido pelo client
         protected ActionResult CustomResponse(object result = null)
         {
             if (ValidOperation())
             {
-                return Ok(new 
+                return Ok(new
                 {
                     success = true,
                     data = result
