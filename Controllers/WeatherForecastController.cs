@@ -63,7 +63,7 @@ namespace MyAPI.Controllers
         {
             var rng = new Random();
 
-            if (Summaries.Length < 15)
+            if (id > Summaries.Length -1)
             {
                 //return BadRequest(); //Possível pois é um ActionResult
                 //return BadRequest();
@@ -71,13 +71,21 @@ namespace MyAPI.Controllers
             }
 
             //OK(...) Retorna um 200
-            return Ok(Enumerable.Range(1, Summaries.Length).Select(index => new WeatherForecast
+            //return Ok(Enumerable.Range(1, Summaries.Length).Select(index => new WeatherForecast
+            //{
+            //    Date = DateTime.Now.AddDays(index),
+            //    TemperatureC = rng.Next(-20, 55),
+            //    Summary = Summaries[rng.Next(Summaries.Length)]
+            //})
+            //.ToArray());
+
+            return Ok(new WeatherForecast
             {
-                Date = DateTime.Now.AddDays(index),
+                Date = DateTime.Now.AddDays(1),
                 TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray());
+                Summary = Summaries[id]
+
+            });
         }
 
         [HttpPost]
